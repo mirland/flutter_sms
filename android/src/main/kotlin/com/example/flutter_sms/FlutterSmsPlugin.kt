@@ -13,6 +13,7 @@ import android.os.Build
 import android.telephony.SmsManager
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -136,7 +137,7 @@ class FlutterSmsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
       PendingIntent.FLAG_IMMUTABLE
     )
 
-    activity?.registerReceiver(object : BroadcastReceiver() {
+    ContextCompat.registerReceiver(activity!!, object : BroadcastReceiver() {
       override fun onReceive(context: Context, intent: Intent) {
         activity?.unregisterReceiver(this)
         when (resultCode) {
@@ -148,7 +149,7 @@ class FlutterSmsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
           )
         }
       }
-    }, IntentFilter(SENT_INTENT_ACTION))
+    }, IntentFilter(SENT_INTENT_ACTION), ContextCompat.RECEIVER_EXPORTED)
 
     val mSmsManager = SmsManager.getDefault()
     val numbers = phones.split(";")
